@@ -1,36 +1,38 @@
 ﻿using AddressBookDL;
+using AddressBookDL.InterfacesOfRepo;
 using AddressBookEL.IdentityModels;
 using AddressBookEL.Mapping;
+using AddressBookEL.Models;
+using AddressBookEL.ViewModels;
 using AddressBookPL.DefaultData;
+using AutoMapper;
 using AutoMapper.Extensions.ExpressionMapping;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography.Xml;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+//sonrdan eklenen
 builder.Services.AddDbContext<MyContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Local"));
-
 });
-//identtiy ayar� 
+
+//identity ayarı
+
 builder.Services.AddIdentity<AppUser, AppRole>(options =>
 {
-    // ayarlar eklenecek
+    //ayarlar eklenecek
     options.Password.RequiredLength = 4;
     options.Password.RequireUppercase = false;
     options.Password.RequireLowercase = false;
-    options.Password.RequireNonAlphanumeric = false; // @ / () [] {} ? : ; karakterler
+    options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireDigit = false;
     options.User.RequireUniqueEmail = true;
-    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyz-_0123456789";
-
-
+    options.User.AllowedUserNameCharacters = "asdfghjklşiqwertyuopğüzxcvbnmöç-_123456789QWERTYUIOPĞÜASDFGHJKLŞİZXCVBNMÖÇ";
 
 }).AddDefaultTokenProviders().AddEntityFrameworkStores<MyContext>();
-
-
 
 
 
@@ -41,15 +43,11 @@ builder.Services.AddAutoMapper(x =>
     x.AddExpressionMapping();
     x.AddProfile(typeof(Maps));
 });
-
-
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-//interfacelerin DI için yaşam dngüleri (AddScoped)
-//buraya geri d�nece�iz
-
-
+//interfaceların DI için yaşam döngüleri (AddScoped)
+//buraya geri döneceğiz
 
 
 
@@ -60,27 +58,26 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
-app.UseStaticFiles(); // wwwroot
+app.UseStaticFiles();//wwwroot
 
 app.UseRouting();
 
-app.UseAuthentication(); //login logout
-app.UseAuthorization(); // yetki
+app.UseAuthentication();//login logut
+app.UseAuthorization();//yetki
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+// Proje ilk �al��aca�� zaman default olarak eklenmesini istedi�iniz verileri yada ba�ka i�lemleri yazd���n�z class� burada �a��rmal�s�n�z
 
-// Proje ilk çalışacak zaman default olarak eklenmesini istedi�iniz verileri yada ba�ka işlemleri yazdığınız classı burada çağırmalısısnız
 
+//buraya geri d�nece�iz
 
-//buraya geri döneceğiz
+//app.Data(); // extension metot olarka �a��rmak
+//DataDefault.Data(app);  // harici �a��rmak
 
-//app.Data(); // extension metot olarka çağırmak
-//DataDefault.Data(app);  // harici çağırmak
-
-//Xihan Shen ablan�n y�nteminden yapalım boylece Erdener'in static olmasın isteiğini yerine getirelim.
+//Xihan Shen ablan�n y�nteminden yapal�m b�ylece Erdener'in static olmas�n istei�ini yerine getirelim.
 
 using (var scope = app.Services.CreateScope())
 {
@@ -96,4 +93,4 @@ using (var scope = app.Services.CreateScope())
 }
 
 
-app.Run(); // uygulamay çalıştır
+app.Run();//uygulamayı çalıştırır.
