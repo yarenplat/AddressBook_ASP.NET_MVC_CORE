@@ -1,0 +1,33 @@
+﻿@model LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-3 offset-3">
+        <h5>Giriş Ekranı</h5>
+
+        <form asp-controller="Account" asp-action="Login" method="post">
+            <div class="form-group">
+                <label>Kullanıcı Adı veya Email:</label>
+                <input type="text" class="form-control" asp-for="UsernameOrEmail" />
+
+            </div>
+            <div class="form-group">
+                <label>Şifre:</label>
+                <input type="text" class="form-control" asp-for="Password" />
+
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class=" btn btn-info">GİRİŞ YAP</button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+
+</div>

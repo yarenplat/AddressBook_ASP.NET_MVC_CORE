@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AddressBookDL.Migrations
 {
     /// <inheritdoc />
-    public partial class a1 : Migration
+    public partial class a2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

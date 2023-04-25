@@ -1,0 +1,51 @@
+﻿@model RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+    //Layout=""; Tema giydirdigimizde layotu degistebiliriz.
+}
+<div class="row">
+
+    <div class="col-md-6 offset-3 offset-3">
+        <h5 class="text-center">Bilgileri doldurup sisteme kayit olabilirsiniz.</h5>
+        <form asp-controller="Account" asp-action="Register" method="post" >
+            <div class="text-danger" asp-validation-summary="All"></div>
+            <div class="form-group">
+                <label>Kullanıcı Adı :</label>
+                <input type="text" class="form-control" asp-for="UserName" />
+            </div>
+            <div class="form-group">
+                <label>İsim :</label>
+                <input type="text" class="form-control" asp-for="FirstName" />
+            </div>
+            <div class="form-group">
+                <label>Soyisim :</label>
+                <input type="text" class="form-control" asp-for="LastName" />
+            </div>
+            <div class="form-group">
+                <label>E-mail :</label>
+                <input type="email" class="form-control" asp-for="Email" />
+            </div>
+            <div class="form-group">
+                <label>Telefon :</label>
+                <input type="tel" class="form-control" asp-for="Phone" />
+            </div>
+            <div class="form-group">
+                <label>Doğum Tarihi :</label>
+                <input type="date" class="form-control" asp-for="Birthdate" /> @*saat istersen datetime yap c# ta date diye bir şey yok*@
+            </div>
+            <div class="form-group">
+                <label>Şifre :</label>
+                <input type="password" class="form-control" asp-for="Password" />
+            </div>
+            <div class="form-group">
+                <label>Şifre Tekrar :</label>
+                <input type="password" class="form-control" asp-for="PasswordConfirm" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-info">KAYDET</button>
+
+            </div>
+
+        </form>
+    </div>
+</div>

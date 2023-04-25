@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AddressBookDL.Migrations
 {
     [DbContext(typeof(MyContext))]
-    [Migration("20230424110406_a1")]
-    partial class a1
+    [Migration("20230425060049_a2")]
+    partial class a2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
