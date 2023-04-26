@@ -1,0 +1,101 @@
+﻿@using AddressBookEL.ViewModels;
+@model UserAddressVM
+
+@{
+    ViewData["Title"] = "AddAddress";
+}
+
+<div class="row">
+    <form>
+        <input type="hidden" asp-for="UserId" />
+
+        <div class="row">
+            <div class="col-md-5">
+                <span class="text-danger"
+                      style="font-weight:bold;margin-right:3px;">
+                    *
+                </span>
+                <label>Adres Başlığı:</label>
+                <input type="text" class="form-control" asp-for="Title" required />
+            </div>
+        </div> <br />
+
+        <div class="row">
+            <div class="col-md-3">
+                <span class="text-danger"
+                      style="font-weight:bold;margin-right:3px;">
+                    *
+                </span>
+                <label>İl:</label>
+                <select id="cityselect" class="form-control">
+                    <option value="0">***İl Seçiniz***</option>
+                    @foreach (var item in ViewBag.Cities as List<CityVM>)
+                    {
+                        <option value=@item.Id>@item.Name</option>
+                    }
+                </select>
+
+            </div>
+
+            <div class="col-md-3">
+                <span class="text-danger"
+                      style="font-weight:bold;margin-right:3px;">
+                    *
+                </span>
+                <label>İlçe:</label>
+                <select class="form-control" id="districtSelect">
+                    <option value="0">***İlçe Seçiniz***</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <span class="text-danger"
+                      style="font-weight:bold;margin-right:3px;">
+                    *
+                </span>
+                <label>Mahalle:</label>
+                <select class="form-control" id="neighbourhoodSelect" asp-for="NeighbourhoodId">
+                    <option value="0">***Mahalle Seçiniz***</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label>Posta Kodu:</label>
+                <input type="text" class="form-control" id="postalcode" disabled />
+            </div>
+
+
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-12">
+                <span class="text-danger"
+                      style="font-weight:bold;margin-right:3px;">
+                    *
+                </span>
+                <label>Adres Detayları:</label>
+                <textarea class="form-control" rows="3" asp-for="Details"></textarea>
+            </div>
+        </div>
+
+        <br />
+
+        <div class="row">
+            <div class="col-md-8">
+                <input type="checkbox" class="form-control" asp-for="IsDefaultAddress" value="Varsayılan Adres Olarak Ayarla." />
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <input type="button" class="btn btn-primary container" style="float:right" value="KAYDET" id="btnSave" />
+            </div>
+
+            <div class="col-md-6">
+                <input type="button" class="btn btn-danger container" style="float:left" value="TEMİZLE" id="btnClear" />
+            </div>
+        </div>
+    </form>
+
+</div>
+

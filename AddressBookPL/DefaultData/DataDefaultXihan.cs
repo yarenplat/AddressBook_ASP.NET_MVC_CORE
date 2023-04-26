@@ -21,7 +21,7 @@ namespace AddressBookPL.DefaultData
                         //rolden yokmuş ekleyelim
                         AppRole role = new AppRole()
                         {
-                            Name = $"{DateTime.Now} {item}"
+                            Name = $"{item}"
                         };
 
                         var result = roleManager.CreateAsync(role).Result;

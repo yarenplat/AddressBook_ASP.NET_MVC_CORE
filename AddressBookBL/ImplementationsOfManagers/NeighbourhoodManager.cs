@@ -1,4 +1,5 @@
-﻿using AddressBookDL.InterfacesOfRepo;
+﻿using AddressBookBL.InterfacesOfManagers;
+using AddressBookDL.InterfacesOfRepo;
 using AddressBookEL.Models;
 using AddressBookEL.ViewModels;
 using AutoMapper;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AddressBookBL.ImplementationsOfManagers
 {
-    public class NeighbourhoodManager : Manager<NeighbourhoodVM, Neighbourhood, int>
+    public class NeighbourhoodManager : Manager<NeighbourhoodVM, Neighbourhood, int>,INeighbourhoodManager
     {
 
         public NeighbourhoodManager(INeighbourhoodRepo repo, IMapper mapper)

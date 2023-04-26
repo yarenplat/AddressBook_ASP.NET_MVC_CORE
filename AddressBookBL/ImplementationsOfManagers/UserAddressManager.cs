@@ -1,4 +1,5 @@
-﻿using AddressBookDL.InterfacesOfRepo;
+﻿using AddressBookBL.InterfacesOfManagers;
+using AddressBookDL.InterfacesOfRepo;
 using AddressBookEL.Models;
 using AddressBookEL.ViewModels;
 using AutoMapper;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AddressBookBL.ImplementationsOfManagers
 {
-    public class UserAddressManager : Manager<UserAddressVM, UserAddress, int>
+    public class UserAddressManager : Manager<UserAddressVM, UserAddress, int>,IUserAddressManager
     {
 
         public UserAddressManager(IUserAddressRepo repo, IMapper mapper)
