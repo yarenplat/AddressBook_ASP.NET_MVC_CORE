@@ -118,11 +118,19 @@ using (var scope = app.Services.CreateScope())
     var roleManager = (RoleManager<AppRole>?)scope.ServiceProvider.GetService(typeof(RoleManager<AppRole>));
     // do you things here
 
+    var cityManager = (ICityManager?)scope.ServiceProvider.GetService(typeof(ICityManager));
+
+    var districtManager = (IDistrictManager?)scope.ServiceProvider.GetService(typeof(IDistrictManager));
+
+    var neighbourhoodManager = (INeighbourhoodManager?)scope.ServiceProvider.GetService(typeof(INeighbourhoodManager));
+
     DataDefaultXihan d = new DataDefaultXihan();
 
-    d.CheckAndCreateRoles(roleManager);
-
+    //d.CheckAndCreateRoles(roleManager);
+    //d.CreateAllCities(cityManager);
+    //d.CreateAllDistricts(districtManager);
+    //d.CreateSomeNeighbourhood(neighbourhoodManager,cityManager,districtManager);
 }
 
 
-app.Run(); // uygulamay� �al��t�r
+app.Run(); // uygulamayı çalıştırır

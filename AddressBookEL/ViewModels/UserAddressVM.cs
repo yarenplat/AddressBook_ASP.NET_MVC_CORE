@@ -26,8 +26,8 @@ namespace AddressBookEL.ViewModels
         public string UserId { get; set; }
         public int NeighbourhoodId { get; set; }
         public bool IsDefaultAddress { get; set; }
-        public NeighbourhoodVM  NeighbourhoodFK { get; set; }
+        public NeighbourhoodVM?  NeighbourhoodFK { get; set; }
 
-        public AppUser AppUser { get; set; }
+        public AppUser? AppUser { get; set; }
     }
 }

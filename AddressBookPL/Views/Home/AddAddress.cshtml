@@ -1,5 +1,4 @@
-﻿@using AddressBookEL.ViewModels;
-@model UserAddressVM
+﻿@model UserAddressVM
 
 @{
     ViewData["Title"] = "AddAddress";
@@ -7,16 +6,23 @@
 
 <div class="row">
     <form>
-        <input type="hidden" asp-for="UserId" />
+        <input type="hidden" asp-for="UserId" id="userid" />
 
         <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-6">
                 <span class="text-danger"
                       style="font-weight:bold;margin-right:3px;">
                     *
                 </span>
                 <label>Adres Başlığı:</label>
-                <input type="text" class="form-control" asp-for="Title" required />
+                <input type="text" class="form-control" asp-for="Title" id="addresstitle"
+                       required />
+            </div>
+
+            <div class="col-md-6" style="margin-top:30px">
+                <input type="checkbox" id="checkbox1" asp-for="IsDefaultAddress">
+                <label for="checkbox1">Varsayılan Adres Olarak Ayarla.</label>
+
             </div>
         </div> <br />
 
@@ -61,7 +67,8 @@
 
             <div class="col-md-3">
                 <label>Posta Kodu:</label>
-                <input type="text" class="form-control" id="postalcode" disabled />
+                <input type="text" class="form-control" id="postalcode"
+                       disabled />
             </div>
 
 
@@ -74,18 +81,13 @@
                     *
                 </span>
                 <label>Adres Detayları:</label>
-                <textarea class="form-control" rows="3" asp-for="Details"></textarea>
+                <textarea class="form-control" rows="3" asp-for="Details"
+                          id="addressdetail"></textarea>
             </div>
         </div>
 
         <br />
 
-        <div class="row">
-            <div class="col-md-8">
-                <input type="checkbox" class="form-control" asp-for="IsDefaultAddress" value="Varsayılan Adres Olarak Ayarla." />
-
-            </div>
-        </div>
         <div class="row">
             <div class="col-md-6">
                 <input type="button" class="btn btn-primary container" style="float:right" value="KAYDET" id="btnSave" />
@@ -99,3 +101,182 @@
 
 </div>
 
+@section Scripts{
+    <script>
+
+        $(document).ready(function () {
+
+            //ilçe ve mahalle comboları pasif olacak
+            $("#districtSelect").attr("disabled", true);
+            $("#neighbourhoodSelect").attr("disabled", true);
+            $("#cityselect").val(0);
+
+
+            //city combosundan il seçildiğinde value >0 ise o ile bağlı ilçeleri ilçe combosuna dolduracağız
+
+            $("#cityselect").change(function () {
+
+                // önce burada il değeri değişti anda ilçe ve mahalle comboları temizlenecek
+                $("#districtSelect").empty();
+                $("#districtSelect").append("<option selected value='0'>***İlçe Seçiniz***</option>");
+                $("#districtSelect").attr("disabled", true);
+
+
+                $("#neighbourhoodSelect").empty();
+                $("#neighbourhoodSelect").append("<option selected value='0'>***Mahalle Seçiniz***</option>");
+                $("#neighbourhoodSelect").attr("disabled", true);
+
+                $("#postalcode").val(''); // posta kodu temizlensin
+
+                // hangi ili seçtiğine bakacağız
+
+                var cityid = $("#cityselect").val(); // this.value
+
+                if (cityid > 0) {
+                    $.ajax({
+                        type: "get",
+                        url: '/Home/GetCityDistricts/' + cityid,
+                        success: function (res) {
+                            if (res.issuccess) {
+
+                                console.log(res.data);
+                                //döngü kurup her ilçeyi comboya aktaracapız
+                                $.each(res.data, function () {
+                                    $("#districtSelect").append($("<option />")
+                                        .val(this.id).text(this.name));
+
+                                }); // döngü bitti
+                                $("#districtSelect").attr("disabled", false); // aktif
+
+                            }
+                            else {
+                                alert(res.message);
+                            }
+                        }, // success bitti
+                        error: function (res) {
+                            alert(res.message);
+                        }
+                    }); // ajax bitti
+                } // if bitti
+
+            });// cityselect bitti
+
+
+            //ilçe seçildiğinde ona bağlı mahalleleri getireceğiz
+            $("#districtSelect").change(function () {
+
+                //önce gidip mahalle combosunu temizlicek
+                $("#neighbourhoodSelect").empty();
+                $("#neighbourhoodSelect").append(
+                    "<option selected value='0'>***Mahalle Seçiniz***</option>");
+                $("#neighbourhoodSelect").attr("disabled", true);
+
+
+                $("#postalcode").val(''); // posta kodu temizlensin
+
+                // hangi ilçeyi seçtiğine bakacağız
+                var districtid = $("#districtSelect").val();
+                if (districtid > 0) {
+
+                    $.ajax({
+                        type: "get",
+                        url: '/Home/GetDistrictNeighs/' + districtid,
+                        success: function (res) {
+                            if (res.issuccess) {
+
+                                console.log(res.data);
+                                //döngü kurup her ilçeyi comboya aktaracapız
+                                $.each(res.data, function () {
+                                    $("#neighbourhoodSelect").append($("<option />")
+                                        .val(this.id).text(this.name));
+
+                                }); // döngü bitti
+                                $("#neighbourhoodSelect").attr("disabled", false); // aktif
+
+                            }
+                            else {
+                                alert(res.message);
+                            }
+                        }, // success bitti
+                        error: function (res) {
+                            alert(res.message);
+                        }
+                    }); // ajax bitti
+
+                } // if bitti
+
+            }); // district select bitti
+
+
+            $("#btnClear").click(function () {
+
+                $("#addresstitle").val('');
+                $("#addressdetail").val('');
+                $("#cityselect").val(0).trigger('change'); // trigger ile change eventı tetiklendi
+                $("#checkbox1").attr('checked', false);
+
+            }); // btnClear bitti
+
+
+            $("#btnSave").click(function () {
+
+                //mahalle başlık detay userid varsayılan mı?
+
+                var neighbourid = $("#neighbourhoodSelect").val();
+
+                if (neighbourid > 0) {
+                    var address = {
+                        Title: $("#addresstitle").val(),
+                        Details: $("#addressdetail").val(),
+                        UserId: $("#userid").val(),
+                        NeighbourhoodId: neighbourid
+                    };
+                    //IsDefaultAddress
+
+                    if ($('#checkbox1').is(':checked')) {
+                        address.IsDefaultAddress = true;
+                    }
+
+
+                    $.ajax({
+                        contentType: "application/json charset=utf-8;",
+                        type: "post",
+                        url: "/Home/SaveAddress",
+                        data: JSON.stringify(address),
+                        dataType: "json",
+                        success: function (res) {
+                            if (res.issuccess) {
+                                alert(res.msg);
+
+
+
+                                // TEMİZLİK
+                                $("#addresstitle").val('');
+                                $("#addressdetail").val('');
+                                $("#cityselect").val(0).trigger('change'); // trigger ile change eventı tetiklendi
+                                $("#checkbox1").attr('checked', false);
+
+                            } else {
+                                alert(res.msg);
+                            }
+                        },
+                        error: function (res) {
+                            alert(res.msg);
+                        }
+                    }); // ajax bitti
+
+
+                }
+                else {
+                    alert("Zorulun alanları doldurunuz!");
+                }
+
+            }); // btnSave bitti
+
+
+        }); // document ready bitti
+
+
+
+    </script>
+}
