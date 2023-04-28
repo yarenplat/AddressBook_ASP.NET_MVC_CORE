@@ -8,7 +8,9 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Net;
 
 namespace AddressBookPL.Controllers
 {
@@ -40,7 +42,7 @@ namespace AddressBookPL.Controllers
         }
         [HttpGet]
         //identity'yi kullandığımız için authorize için role eklenebilir
-        [Authorize (Roles = "customer,guest")]
+        [Authorize(Roles = "customer,guest")]
         public IActionResult AddAddress()
         {
             try
@@ -53,7 +55,7 @@ namespace AddressBookPL.Controllers
                     UserId = user.Id
                 };
 
-                return View();
+                return View(model);
             }
             catch (Exception ex)
             {
@@ -63,8 +65,8 @@ namespace AddressBookPL.Controllers
             }
         }
 
-     
-        
+
+
         [HttpGet]
         public JsonResult GetCityDistricts(int id)
         {
@@ -96,7 +98,7 @@ namespace AddressBookPL.Controllers
                 if (data == null)
                 {
 
-                    return Json(new { issuccess = false, message = "mahalleler buunamadi!" });
+                    return Json(new { issuccess = false, message = "mahalleler bulunamadı!" });
                 }
 
 
@@ -110,8 +112,8 @@ namespace AddressBookPL.Controllers
 
         }
 
-        [[HttpPost]
-        [Authorize(Roles = "Customer")]
+        [HttpPost]
+        [Authorize(Roles = "customer")]
         public JsonResult SaveAddress([FromBody] UserAddressVM model)
         {
             try
@@ -148,4 +150,49 @@ namespace AddressBookPL.Controllers
                 return Json(new { issuccess = false, msg = ex.Message });
             }
         }
+
+        [HttpGet]
+        public JsonResult GetNeighbourhoodPostalCode(int cityid, int districtid, int neighbourid)
+        {
+            try
+            {
+                var district = _districtManager.GetByConditions(x => x.Id == districtid).Data;
+
+                var neighbourhood = _neighbourhoodManager.GetByConditions(x => x.Id == neighbourid).Data;
+
+                string url = "https://api.ubilisim.com/postakodu/il/" + cityid;
+
+                using (WebClient client = new WebClient()) // HttpClient WebClient
+                {
+                    var response = client.DownloadString(url);
+                    var dataAll = JsonConvert.DeserializeObject<ApiVM>(response);
+
+                    var data = dataAll.postakodu.FirstOrDefault(
+                    x => x.ilce.ToLower() == district.Name.ToLower()
+                    && x.mahalle.ToLower() == neighbourhood.Name.ToLower());
+
+                    if (data != null)
+                    {
+                        neighbourhood.PostCode = data.pk;
+                        _neighbourhoodManager.Update(neighbourhood);
+                        return Json(new
+                        {
+                            issuccess = true,
+                            msg = "Posta kodu bulundu",
+                            data = data.pk
+                        });
+
+                    }
+                    return Json(new { issuccess = false, msg = "Posta kodu bulunamadı!" });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Json(new { issuccess = false, msg = ex.Message });
+            }
+        }
+
+
+    }
 }

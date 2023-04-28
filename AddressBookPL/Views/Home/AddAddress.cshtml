@@ -213,7 +213,7 @@
                 $("#addresstitle").val('');
                 $("#addressdetail").val('');
                 $("#cityselect").val(0).trigger('change'); // trigger ile change eventı tetiklendi
-                $("#checkbox1").attr('checked', false);
+                $("#checkbox1").prop('checked', false);
 
             }); // btnClear bitti
 
@@ -254,7 +254,7 @@
                                 $("#addresstitle").val('');
                                 $("#addressdetail").val('');
                                 $("#cityselect").val(0).trigger('change'); // trigger ile change eventı tetiklendi
-                                $("#checkbox1").attr('checked', false);
+                                $("#checkbox1").prop('checked', false);
 
                             } else {
                                 alert(res.msg);
@@ -273,8 +273,43 @@
 
             }); // btnSave bitti
 
+            $("#neighbourhoodSelect").change(function(){
 
-        }); // document ready bitti
+                var cityid = $("#cityselect").val();
+                var districtid = $("#districtSelect").val();
+                var neighbourhoodid = $("#neighbourhoodSelect").val();
+                $("#postalcode").val('');
+
+                if (neighbourhoodid > 0) {
+                    $.ajax({
+                        type: "get",
+                        url: "/Home/GetNeighbourhoodPostalCode?cityid=" + cityid
+                            + "&districtid=" + districtid + "&neighbourid=" + neighbourhoodid,
+                        success: function (res) {
+                            if (res.issuccess) {
+                                var postalcode = res.data;
+                                $("#postalcode").val(postalcode);
+                            }
+                            else {
+                                alert(res.msg);
+                            }
+                        }, // success funk. bitti
+                        error: function (res) {
+                            alert(res.msg);
+                        } // error bitti
+
+
+
+
+                    });//ajax bitti
+
+                }//if bitti
+
+
+
+            });//select bitti
+
+                }); // document ready bitti
 
 
 

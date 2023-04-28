@@ -21,7 +21,7 @@ namespace AddressBookEL.Models
 
 
         public string UserId { get; set; }//FK
-        public int NeigbbourhoodId { get; set; }//FK
+        public int NeighbourhoodId { get; set; }//FK
         public bool IsDefaultAddress { get; set; }
 
         [ForeignKey("NeighbourhoodId")]
